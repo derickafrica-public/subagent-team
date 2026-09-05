@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subagent Team Harness — A Working Guide</title>
+<style>
+  :root {
+    --navy: #032D60;
+    --blue: #0176D3;
+    --text: #181818;
+    --bg: #FFFFFF;
+    --bg-soft: #F3F3F3;
+    --border: #E0E0E0;
+    --border-strong: #C9CED2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg-soft);
+  }
+
+  code, pre, .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Layout shell */
+  .stage {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  header.chrome, footer.chrome {
+    flex: 0 0 auto;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px clamp(14px, 3vw, 32px);
+  }
+
+  header.chrome { border-bottom: 1px solid var(--border); }
+  footer.chrome { border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .brand .mark {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    background: var(--blue);
+    flex: 0 0 auto;
+  }
+
+  .brand .deck-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .section-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border-strong);
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .section-pill .num {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 999px;
+    width: 20px; height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    flex: 0 0 auto;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--blue);
+    width: 0%;
+    transition: width 120ms ease-out;
+  }
+
+  main#slides {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .slide {
+    display: none;
+    min-height: 100%;
+    padding: clamp(28px, 6vh, 64px) clamp(20px, 6vw, 96px);
+  }
+
+  .slide.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .slide.dark { background: var(--navy); color: #FFFFFF; }
+  .slide.light { background: var(--bg); color: var(--text); }
+  .slide.soft { background: var(--bg-soft); color: var(--text); }
+
+  .content {
+    max-width: 880px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 14px 0;
+  }
+  .slide.dark .eyebrow { color: #BFD9F2; }
+  .slide.light .eyebrow, .slide.soft .eyebrow { color: var(--blue); }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.12;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3.4vw, 2.15rem);
+    line-height: 1.2;
+    font-weight: 800;
+    margin: 0 0 18px 0;
+  }
+  .slide.dark h1, .slide.dark h2 { color: #FFFFFF; }
+  .slide.light h2, .slide.soft h2 { color: var(--navy); }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 22px 0 8px 0;
+  }
+  .slide.dark h3 { color: #EAF3FB; }
+  .slide.light h3, .slide.soft h3 { color: var(--navy); }
+
+  p, li, dd, td, th {
+    font-size: clamp(0.98rem, 1.5vw, 1.15rem);
+    line-height: 1.55;
+  }
+
+  .subtitle {
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+    max-width: 700px;
+  }
+  .slide.dark .subtitle { color: #DCEBF8; }
+
+  .byline {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-top: 24px;
+  }
+
+  ul, ol { padding-left: 1.3em; margin: 10px 0; }
+  li { margin-bottom: 8px; }
+
+  strong { font-weight: 700; }
+  .slide.dark strong { color: #FFFFFF; }
+  .slide.light strong, .slide.soft strong { color: var(--navy); }
+
+  a { color: var(--blue); text-decoration: underline; }
+  .slide.dark a { color: #BFE0FF; }
+
+  .callout {
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--blue);
+    background: var(--bg);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .slide.dark .callout {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.35);
+    border-left-color: #BFE0FF;
+  }
+  .callout p:first-child { margin-top: 0; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .slide.dark .callout .label { color: #BFE0FF; }
+
+  .roi-line {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: var(--navy);
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: var(--bg);
+  }
+  .slide.dark .card {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.28);
+  }
+  .card h3 { margin-top: 0; }
+  .card .tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: var(--bg-soft);
+    border: 1px solid var(--border-strong);
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .slide.dark .card .tag {
+    color: #032D60;
+    background: #EAF3FB;
+    border-color: #EAF3FB;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid var(--border-strong);
+  }
+  .slide.dark th { color: #BFE0FF; border-bottom-color: rgba(255,255,255,0.4); }
+  .slide.dark td { border-bottom-color: rgba(255,255,255,0.2); }
+
+  dl.persona-list { margin: 10px 0; }
+  dl.persona-list dt {
+    font-weight: 700;
+    color: var(--navy);
+    margin-top: 12px;
+  }
+  .slide.dark dl.persona-list dt { color: #EAF3FB; }
+  dl.persona-list dd { margin: 2px 0 0 0; }
+
+  pre.code-block {
+    background: #0B1F33;
+    color: #EAF3FB;
+    padding: 16px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border: 1px solid #123A5C;
+  }
+
+  ol.decision-tree { list-style: none; padding-left: 0; counter-reset: step; }
+  ol.decision-tree li {
+    counter-increment: step;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 12px 16px 12px 46px;
+    margin-bottom: 10px;
+    position: relative;
+    background: var(--bg);
+  }
+  .slide.dark ol.decision-tree li {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.28);
+  }
+  ol.decision-tree li::before {
+    content: counter(step);
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    width: 22px; height: 22px;
+    background: var(--blue);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  ol.decision-tree .arrow {
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .slide.dark ol.decision-tree .arrow { color: #BFE0FF; }
+
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--bg-soft);
+  }
+  .badge.solid { border: 2px solid var(--navy); }
+  .badge.dashed { border: 2px dashed var(--navy); }
+  .badge.dotted { border: 2px dotted var(--border-strong); color: #4b4b4b; }
+
+  .disclaimer-box {
+    border: 2px solid var(--blue);
+    border-radius: 8px;
+    padding: 18px 22px;
+    background: var(--bg);
+  }
+
+  .skills-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+  @media (max-width: 720px) {
+    .skills-columns { grid-template-columns: 1fr; }
+  }
+  .skills-columns ol { padding-left: 1.1em; }
+  .skills-columns li { font-size: 0.95rem; margin-bottom: 10px; }
+
+  .footnote {
+    margin-top: 18px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  /* Footer / nav controls */
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--navy);
+    border: 1px solid var(--navy);
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  button:hover:not(:disabled) { background: #021f43; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  button.ghost {
+    background: var(--bg);
+    color: var(--navy);
+    border: 1px solid var(--border-strong);
+  }
+  button.ghost:hover:not(:disabled) { background: var(--bg-soft); }
+
+  :focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .counter {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.95rem;
+    min-width: 64px;
+    text-align: center;
+  }
+
+  .kbd-hint {
+    font-size: 0.78rem;
+    color: #555;
+    white-space: nowrap;
+  }
+  .kbd-hint kbd {
+    font-family: inherit;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    padding: 1px 6px;
+    background: var(--bg-soft);
+    font-size: 0.76rem;
+  }
+
+  /* Hero & diagram SVGs (theming via inherited custom properties, so
+     <use>-referenced sprite content adapts to light vs dark slides) */
+  :root {
+    --ic-navy: var(--navy);
+    --ic-blue: var(--blue);
+    --ic-gray: #C9CED2;
+  }
+  .slide.dark {
+    --ic-navy: #EAF3FB;
+    --ic-blue: #BFE0FF;
+    --ic-gray: #8FB6DA;
+  }
+  .ic-navy { fill: var(--ic-navy); }
+  .ic-blue { fill: var(--ic-blue); }
+  .ic-gray { fill: var(--ic-gray); }
+  .ic-navy-s { stroke: var(--ic-navy); }
+  .ic-blue-s { stroke: var(--ic-blue); }
+  .ic-gray-s { stroke: var(--ic-gray); }
+
+  .hero-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 18px 0;
+  }
+  .hero {
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    display: block;
+  }
+
+  .diagram-wrap {
+    margin: 12px 0 6px 0;
+    overflow-x: auto;
+  }
+  .diagram {
+    width: 100%;
+    height: auto;
+    min-width: 620px;
+    display: block;
+  }
+  .diagram-caption {
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+  .slide.dark .diagram-caption { color: #DCEBF8; }
+
+  /* Overview grid */
+  #overview {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 45, 96, 0.92);
+    z-index: 50;
+    display: none;
+    overflow-y: auto;
+    padding: 28px clamp(16px, 4vw, 60px);
+  }
+  #overview.open { display: block; }
+  #overview h2 {
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  #overview .ov-hint {
+    color: #DCEBF8;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+  .ov-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .ov-card {
+    text-align: left;
+    background: #FFFFFF;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+  }
+  .ov-card:hover { background: #EAF3FB; }
+  .ov-card .ov-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .ov-card .ov-sec {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--navy);
+    margin: 2px 0 4px 0;
+  }
+  .ov-card .ov-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .ov-card.current {
+    outline: 3px solid var(--blue);
+    outline-offset: 1px;
+  }
+
+  @media (max-width: 600px) {
+    header.chrome, footer.chrome { flex-direction: column; align-items: stretch; gap: 8px; }
+    .kbd-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <symbol id="ic-network" viewBox="0 0 240 160">
+      <g class="ic-blue-s" fill="none" stroke-width="2">
+        <line x1="120" y1="80" x2="40" y2="30"></line>
+        <line x1="120" y1="80" x2="200" y2="30"></line>
+        <line x1="120" y1="80" x2="40" y2="130"></line>
+        <line x1="120" y1="80" x2="200" y2="130"></line>
+        <line x1="120" y1="80" x2="120" y2="20"></line>
+      </g>
+      <circle class="ic-navy" cx="120" cy="80" r="16"></circle>
+      <circle class="ic-blue" cx="40" cy="30" r="9"></circle>
+      <circle class="ic-blue" cx="200" cy="30" r="9"></circle>
+      <circle class="ic-blue" cx="40" cy="130" r="9"></circle>
+      <circle class="ic-blue" cx="200" cy="130" r="9"></circle>
+      <circle class="ic-blue" cx="120" cy="20" r="9"></circle>
+    </symbol>
+
+    <symbol id="ic-contrast" viewBox="0 0 240 160">
+      <line class="ic-gray-s" x1="95" y1="80" x2="195" y2="80" stroke-width="2" stroke-dasharray="4 5"></line>
+      <circle class="ic-navy" cx="55" cy="80" r="34"></circle>
+      <circle class="ic-blue" cx="170" cy="35" r="9"></circle>
+      <circle class="ic-blue" cx="200" cy="80" r="9"></circle>
+      <circle class="ic-blue" cx="170" cy="125" r="9"></circle>
+      <circle class="ic-blue" cx="140" cy="80" r="9"></circle>
+    </symbol>
+
+    <symbol id="ic-flow" viewBox="0 0 240 160">
+      <path class="ic-navy-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,40 H150"></path>
+      <path class="ic-blue-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,80 H190"></path>
+      <path class="ic-navy-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,120 H120"></path>
+      <path class="ic-navy" d="M150,29 L173,40 L150,51 Z"></path>
+      <path class="ic-blue" d="M190,69 L213,80 L190,91 Z"></path>
+      <path class="ic-navy" d="M120,109 L143,120 L120,131 Z"></path>
+    </symbol>
+
+    <symbol id="ic-cards" viewBox="0 0 240 160">
+      <rect class="ic-gray" x="40" y="55" width="130" height="80" rx="10"></rect>
+      <rect class="ic-blue" x="60" y="37" width="130" height="80" rx="10"></rect>
+      <rect class="ic-navy" x="80" y="19" width="130" height="80" rx="10"></rect>
+    </symbol>
+
+    <symbol id="ic-gate" viewBox="0 0 240 160">
+      <path class="ic-navy-s" fill="none" stroke-width="6" d="M120,14 L196,45 V96 C196,131 160,151 120,151 C80,151 44,131 44,96 V45 Z"></path>
+      <path class="ic-blue-s" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M84,86 L112,113 L161,60"></path>
+    </symbol>
+
+    <symbol id="ic-cycle" viewBox="0 0 240 160">
+      <path class="ic-navy-s" fill="none" stroke-width="8" stroke-linecap="round" d="M60,40 A55,55 0 1 1 55,140"></path>
+      <path class="ic-navy" d="M50,118 L55,145 L28,138 Z"></path>
+      <circle class="ic-blue" cx="60" cy="40" r="8"></circle>
+      <circle class="ic-blue" cx="122" cy="17" r="8"></circle>
+      <circle class="ic-blue" cx="172" cy="53" r="8"></circle>
+      <circle class="ic-blue" cx="182" cy="112" r="8"></circle>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage">
+  <header class="chrome">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="deck-title">Subagent Team Harness — A Working Guide</span>
+    </div>
+    <span class="section-pill" id="sectionPill"><span class="num" id="sectionNum">0</span><span id="sectionLabel">Executive Summary</span></span>
+  </header>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <main id="slides">
+
+    <!-- ============ SECTION 0 — EXECUTIVE SUMMARY ============ -->
+
+    <section class="slide dark active" data-section="0" data-section-label="Executive Summary">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-network"></use></svg></div>
+        <p class="eyebrow">Section 0 · Executive summary · 2-minute read</p>
+        <h1>Subagent Team Harness</h1>
+        <p class="subtitle">A routing-first AI team for Salesforce solution engineers, packaged as a Claude Code plugin.</p>
+        <p class="subtitle">This deck explains what it is, how it works, when to use each piece, and how to adopt it honestly — for solution engineers and for the managers deciding whether it is worth rolling out.</p>
+        <p class="byline">Prepared by Anna, Creative Designer &amp; Content Producer. Section 0 stands alone for a 2-minute read; the full deck runs about 15 minutes.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="0" data-section-label="Executive Summary">
+      <div class="content">
+        <p class="eyebrow">Before you read further</p>
+        <h2>A Disclaimer That Matters More Than It Looks</h2>
+        <div class="disclaimer-box">
+          <p>Every persona name in this plugin — Rolando, Boris, Maggie, Richard, and the rest — is a fictional naming convention that one person invented for their own Claude Code workflow.</p>
+          <p><strong>They are not real people, not a real Salesforce org chart, and not endorsed by Salesforce.</strong></p>
+          <p>Read each "teammate" as a scoped prompt file with a name attached, not a colleague. That framing makes the rest of this deck easier to evaluate honestly.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="0" data-section-label="Executive Summary">
+      <div class="content">
+        <p class="eyebrow">What the plugin is</p>
+        <h2>Two Sentences, Then the Outcome</h2>
+        <p><strong>subagent-team-harness</strong> is a Claude Code plugin that packages a routing-first AI team: one orchestrator persona that never does the work itself, plus 43 specialist personas, 20 skills, 2 slash commands, and 2 workflows, each scoped to a narrow domain. Install it once, and Claude Code loads the routing table, the specialists, and the repeatable procedures into every session in the project.</p>
+        <div class="callout">
+          <span class="label">Reader outcome</span>
+          <p>After this deck: an SE can pick the right tool for a task and run it. A manager can decide whether it is worth adopting for their team.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="0" data-section-label="Executive Summary">
+      <div class="content">
+        <p class="eyebrow">Why a team, not one assistant</p>
+        <h2>Three Business Outcomes</h2>
+        <ol>
+          <li><strong>Consistency and a second pair of eyes.</strong> Two standing quality gates — Boris for technical accuracy, Maggie for pedagogy and voice — review finished work before it ships.</li>
+          <li><strong>Speed on repeatable prep work.</strong> Parallel fan-out runs several research or review steps at once instead of one at a time, for the tasks where that structure pays off.</li>
+          <li><strong>Lower ramp cost.</strong> "How we do X" lives in a persona or skill file a new team member can read, not only in one person's head.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="slide dark" data-section="0" data-section-label="Executive Summary">
+      <div class="content">
+        <p class="eyebrow">What this is not</p>
+        <h2>Honest Caveats, Stated Up Front</h2>
+        <ul>
+          <li><strong>No maintainer.</strong> One person built this for their own workflow; nobody is on call for it.</li>
+          <li><strong>Needs adaptation per team.</strong> Rename or delete personas, swap in your own accounts, and adjust the skills before you rely on it.</li>
+          <li><strong>It drafts.</strong> Every output is a draft a human reviews and sends — it does not act unsupervised.</li>
+          <li><strong>Read-only Salesforce access.</strong> Nothing it does writes back to your org.</li>
+        </ul>
+        <div class="roi-line">Honest ROI framing: it removes the blank page and the re-typing. It does not replace SE judgment.</div>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 1 — WHY (MENTAL MODEL) ============ -->
+
+    <section class="slide dark" data-section="1" data-section-label="Why It Works This Way">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-contrast"></use></svg></div>
+        <p class="eyebrow">Section 1 · The mental model</p>
+        <h2>The Generalist Tax</h2>
+        <p>One large context window trying to do everything — account research, deck-building, risk tracking, calendar triage — pays four costs:</p>
+        <ul>
+          <li>It answers less consistently call to call, because "the whole job" competes for the same context.</li>
+          <li>It has no second reviewer, so a weak draft ships as easily as a strong one.</li>
+          <li>It forgets between sessions unless someone re-explains the background each time.</li>
+          <li>It cannot do several independent things at once — it is one thread of reasoning.</li>
+        </ul>
+        <p><strong>The fix is not a smarter model. It is routing:</strong> split the work by domain and let each split hold a narrower job.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="1" data-section-label="Why It Works This Way">
+      <div class="content">
+        <p class="eyebrow">Pattern 1 of 4</p>
+        <h2>Orchestrator Routes to a Scoped Specialist</h2>
+        <p>A persona file scoped to one domain — say, Data Cloud architecture — carries denser, narrower context than a generalist, so its answers stay more consistent call to call. The orchestrator persona's only job is matching a request to the right file and handing off; it does not do the work itself.</p>
+        <div class="callout">
+          <span class="label">Cost</span>
+          <p>43 files to maintain, and routing only helps if the table stays accurate — a stale routing table quietly misroutes work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="1" data-section-label="Why It Works This Way">
+      <div class="content">
+        <p class="eyebrow">Pattern 2 of 4</p>
+        <h2>Structural Parallel Fan-Out Via Workflow Scripts</h2>
+        <p>Deterministic JavaScript orchestration — <code>parallel()</code>, <code>pipeline()</code>, <code>agent()</code> — turns a multi-agent fan-out into a reviewable, resumable artifact, instead of "trust the model to remember to dispatch five things." It adds schema-validated agent outputs, and can add an adversarial verification step on top — as the weekly-risk-sweep example does.</p>
+        <div class="callout">
+          <span class="label">Cost</span>
+          <p>High token cost and more moving parts. Justified only when several independent surfaces genuinely need to run at once and the result needs verification.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="1" data-section-label="Why It Works This Way">
+      <div class="content">
+        <p class="eyebrow">Pattern 3 of 4</p>
+        <h2>Standing Quality Gates</h2>
+        <p>Two personas review finished work before it reaches a customer: <strong>Boris</strong> checks fit against Claude and Anthropic best practices — is this the simplest design, are prompts cache-friendly, is there an eval. <strong>Maggie</strong> checks pedagogy and voice — a clear takeaway, the right tone, style-guide compliance. Each returns a verdict: SHIP, REWORK, or KILL.</p>
+        <div class="callout">
+          <span class="label">Cost</span>
+          <p>Every non-trivial artifact takes two extra passes before it ships. Slower, but issues get caught before a customer sees them.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="1" data-section-label="Why It Works This Way">
+      <div class="content">
+        <p class="eyebrow">Pattern 4 of 4</p>
+        <h2>Persistent Per-Account Memory</h2>
+        <p>The account-research skill keeps dated Markdown notes under <code>accounts/&lt;slug&gt;/</code>, so research on a specific account compounds across sessions — new signals get added to what is already known, instead of restarting from zero every time someone asks.</p>
+        <div class="callout">
+          <span class="label">Cost</span>
+          <p>Memory is only as good as the discipline to keep visiting and updating it. An account nobody revisits goes stale, like any notes folder.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 2 — HOW IT WORKS ============ -->
+
+    <section class="slide dark" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-flow"></use></svg></div>
+        <p class="eyebrow">Section 2 · The four primitives</p>
+        <h2>Four Building Blocks, One Decision Each</h2>
+        <table>
+          <thead>
+            <tr><th>Primitive</th><th>In one line</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Subagent</strong></td><td>An isolated AI worker with its own context, tools, and model choice.</td></tr>
+            <tr><td><strong>Skill</strong></td><td>A reusable procedure, auto-discovered by semantic match on the request.</td></tr>
+            <tr><td><strong>Slash command</strong></td><td>A guaranteed-fire, explicitly invoked single action.</td></tr>
+            <tr><td><strong>Workflow</strong></td><td>Deterministic JavaScript orchestration with verification and resume.</td></tr>
+          </tbody>
+        </table>
+        <p class="footnote">The next four slides take each one in turn: what it is, when to use it, when not to, and an example from this plugin.</p>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">The hub-and-spoke model</p>
+        <h2>How a Request Gets Routed</h2>
+        <div class="diagram-wrap">
+          <svg class="diagram" viewBox="0 0 900 380" role="img" aria-labelledby="routeTitle routeDesc">
+            <title id="routeTitle">Diagram: how a request is routed through the team</title>
+            <desc id="routeDesc">A user request arrives at the orchestrator, Rolando, who never performs the work directly. Rolando matches the request against a routing table and hands it to one or more of four pods: Salesforce Platform Core, Data and AI Architecture, Personal Productivity, and Risk. Each pod contains named subagents — Bob, Richard, Tobias, and Matija are shown here as examples. Those subagents do the work and return results. The results flow back up through the orchestrator, who synthesizes them into a single answer for the user.</desc>
+            <defs>
+              <marker id="arrowRouteFwd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="ic-navy" />
+              </marker>
+              <marker id="arrowRouteBack" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="ic-blue" />
+              </marker>
+            </defs>
+
+            <rect x="370" y="10" width="160" height="40" rx="6" class="ic-navy" />
+            <text x="450" y="35" text-anchor="middle" font-size="14" fill="#fff">User request</text>
+            <line x1="450" y1="50" x2="450" y2="78" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+
+            <rect x="310" y="80" width="280" height="52" rx="6" class="ic-blue" />
+            <text x="450" y="102" text-anchor="middle" font-size="14" fill="#fff" font-weight="600">Orchestrator (Rolando)</text>
+            <text x="450" y="120" text-anchor="middle" font-size="11" fill="#fff">routes, never does the work itself</text>
+
+            <line x1="450" y1="132" x2="120" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="450" y1="132" x2="340" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="450" y1="132" x2="560" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="450" y1="132" x2="780" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+
+            <rect x="20" y="170" width="200" height="44" rx="6" class="ic-gray" />
+            <text x="120" y="196" text-anchor="middle" font-size="12" fill="#032D60">Salesforce Platform Core</text>
+            <rect x="240" y="170" width="200" height="44" rx="6" class="ic-gray" />
+            <text x="340" y="196" text-anchor="middle" font-size="12" fill="#032D60">Data &amp; AI Architecture</text>
+            <rect x="460" y="170" width="200" height="44" rx="6" class="ic-gray" />
+            <text x="560" y="196" text-anchor="middle" font-size="12" fill="#032D60">Personal Productivity</text>
+            <rect x="680" y="170" width="200" height="44" rx="6" class="ic-gray" />
+            <text x="780" y="196" text-anchor="middle" font-size="12" fill="#032D60">Risk</text>
+
+            <line x1="120" y1="214" x2="120" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="340" y1="214" x2="340" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="560" y1="214" x2="560" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="780" y1="214" x2="780" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+
+            <rect x="40" y="260" width="160" height="40" rx="6" class="ic-navy" />
+            <text x="120" y="285" text-anchor="middle" font-size="13" fill="#fff">Bob</text>
+            <rect x="260" y="260" width="160" height="40" rx="6" class="ic-navy" />
+            <text x="340" y="285" text-anchor="middle" font-size="13" fill="#fff">Richard</text>
+            <rect x="480" y="260" width="160" height="40" rx="6" class="ic-navy" />
+            <text x="560" y="285" text-anchor="middle" font-size="13" fill="#fff">Tobias</text>
+            <rect x="700" y="260" width="160" height="40" rx="6" class="ic-navy" />
+            <text x="780" y="285" text-anchor="middle" font-size="13" fill="#fff">Matija</text>
+
+            <line x1="120" y1="258" x2="430" y2="134" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+            <line x1="780" y1="258" x2="470" y2="134" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+            <line x1="450" y1="132" x2="450" y2="328" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+
+            <rect x="370" y="330" width="160" height="40" rx="6" class="ic-blue" />
+            <text x="450" y="355" text-anchor="middle" font-size="13" fill="#fff" font-weight="600">Synthesized answer</text>
+          </svg>
+        </div>
+        <p class="diagram-caption">One request in — routed to the owner, never handled by the orchestrator itself — a synthesized answer out.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Primitive 1 of 4</p>
+        <h2>Subagents</h2>
+        <p><strong>What it is:</strong> an AI worker that runs in its own isolated context window, with its own scoped system prompt, tool allowlist, and model choice. It does not see the parent conversation or any sibling subagent's work — it returns a summary.</p>
+        <p><strong>Use when:</strong> the task is self-contained and specialized, you want tool or model scoping, or you want several independent tasks running in parallel.</p>
+        <p><strong>Do not use when:</strong> the task needs tight back-and-forth with the main thread, or it is a trivial one-liner.</p>
+        <p><strong>Example in this plugin:</strong> dispatching the Richard subagent for a Data Cloud architecture point of view.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Primitive 2 of 4</p>
+        <h2>Skills</h2>
+        <p><strong>What it is:</strong> a reusable multi-step procedure with progressive disclosure — a short, always-on description Claude sees every session (small token cost), and a fuller body that loads only when a request semantically matches.</p>
+        <p><strong>Use when:</strong> a repeatable procedure should be auto-discoverable from natural language.</p>
+        <p><strong>Do not use when:</strong> you need a guaranteed fire (use a slash command instead), or the "skill" is really just always-on guidance that belongs in CLAUDE.md.</p>
+        <div class="callout">
+          <span class="label">Important caveat</span>
+          <p>Discovery is by semantic match, so a skill is <strong>not guaranteed to fire</strong> — loose or unusual phrasing can miss it.</p>
+        </div>
+        <p><strong>Example in this plugin:</strong> pre-call-prep, triggered by "prep for [account] meeting."</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Primitive 3 of 4</p>
+        <h2>Slash Commands</h2>
+        <p><strong>What it is:</strong> a guaranteed-fire, explicitly invoked action, typically single-purpose.</p>
+        <p><strong>Use when:</strong> timing or certainty matters more than loose natural-language phrasing.</p>
+        <p><strong>Do not use when:</strong> the task is exploratory or has no fixed single action to run.</p>
+        <p><strong>Examples in this plugin:</strong></p>
+        <ul>
+          <li><code>/account-summary-update [account]</code> — a guaranteed path to the account-summary run.</li>
+          <li><code>/apply-proposals</code> — walk the self-improvement proposals one at a time.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Primitive 4 of 4</p>
+        <h2>Workflows</h2>
+        <p><strong>What it is:</strong> deterministic JavaScript that holds the orchestration logic itself — branching, parallelism, verification — instead of Claude deciding turn by turn what to dispatch.</p>
+        <p><strong>Benefits over hand-dispatching subagents:</strong> repeatable orchestration, schema validation on agent outputs, and resume-from-cache, where re-running skips unchanged steps. A workflow can also add an adversarial verify pass — as the weekly-risk-sweep example does — though not every workflow includes one.</p>
+        <p><strong>Use when:</strong> parallelism or verification materially matters — several independent agents feeding one synthesized result.</p>
+        <p><strong>Do not use when:</strong> the task is one to three items, or needs mid-run human input.</p>
+        <div class="callout">
+          <span class="label">Cost</span>
+          <p>High token cost. This is the heaviest of the four primitives — reach for it deliberately, not by default.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">A rule that has no exception</p>
+        <h2>How One Subagent's Output Feeds Another</h2>
+        <div class="diagram-wrap">
+          <svg class="diagram" viewBox="0 0 900 400" role="img" aria-labelledby="handoffTitle handoffDesc">
+            <title id="handoffTitle">Diagram: how one subagent's output becomes another subagent's input</title>
+            <desc id="handoffDesc">Six fan-out subagents from the weekly-risk-sweep workflow — Tobias, Dorian, Defoe, Pemberton, Marlow, and Sloan — each read an independent surface and return schema-validated signals. The workflow script bundles those six outputs. Two verify subagents each receive a bundled high-risk candidate and try to refute it. The workflow script bundles the verified survivors again. Matija, a synthesis subagent, receives that second bundle and writes the final brief. At every stage the workflow script sits between one subagent and the next — no subagent ever reads another subagent's output directly, and none share a context window.</desc>
+            <defs>
+              <marker id="arrowStage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="ic-navy" />
+              </marker>
+            </defs>
+
+            <rect x="35" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="95" y="45" text-anchor="middle" font-size="12" fill="#fff">Tobias</text>
+            <rect x="170" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="230" y="45" text-anchor="middle" font-size="12" fill="#fff">Dorian</text>
+            <rect x="305" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="365" y="45" text-anchor="middle" font-size="12" fill="#fff">Defoe</text>
+            <rect x="440" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="500" y="45" text-anchor="middle" font-size="11" fill="#fff">Pemberton</text>
+            <rect x="575" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="635" y="45" text-anchor="middle" font-size="12" fill="#fff">Marlow</text>
+            <rect x="710" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="770" y="45" text-anchor="middle" font-size="12" fill="#fff">Sloan</text>
+
+            <line x1="95" y1="60" x2="95" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="230" y1="60" x2="230" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="365" y1="60" x2="365" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="500" y1="60" x2="500" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="635" y1="60" x2="635" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="770" y1="60" x2="770" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="35" y="90" width="795" height="30" rx="4" class="ic-blue" />
+            <text x="432" y="110" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">workflow script bundles the six fan-out signals</text>
+
+            <line x1="230" y1="120" x2="300" y2="148" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="635" y1="120" x2="560" y2="148" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="140" y="150" width="300" height="40" rx="6" class="ic-navy" />
+            <text x="290" y="175" text-anchor="middle" font-size="12" fill="#fff">Verify subagent — refute candidate A</text>
+            <rect x="460" y="150" width="300" height="40" rx="6" class="ic-navy" />
+            <text x="610" y="175" text-anchor="middle" font-size="12" fill="#fff">Verify subagent — refute candidate B</text>
+
+            <line x1="290" y1="190" x2="380" y2="218" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="610" y1="190" x2="520" y2="218" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="200" y="220" width="500" height="30" rx="4" class="ic-blue" />
+            <text x="450" y="240" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">workflow script bundles the verified survivors</text>
+
+            <line x1="450" y1="250" x2="450" y2="278" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="330" y="280" width="240" height="44" rx="6" class="ic-navy" />
+            <text x="450" y="298" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">Matija — synthesis subagent</text>
+            <text x="450" y="315" text-anchor="middle" font-size="10" fill="#fff">writes the brief, gates it</text>
+
+            <line x1="450" y1="324" x2="450" y2="352" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="330" y="354" width="240" height="40" rx="6" class="ic-gray" />
+            <text x="450" y="379" text-anchor="middle" font-size="12" fill="#032D60">Weekly risk brief</text>
+          </svg>
+        </div>
+        <p class="diagram-caption">Subagents do not share memory. The orchestrator or workflow script captures one subagent's output and carries it into the next subagent's input — there is no direct link between subagents.</p>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Worked example, part 1</p>
+        <h2>weekly-risk-sweep: Fan-Out and Verify</h2>
+        <h3>Phase 1 — Fan-out</h3>
+        <p>Six personas read six independent surfaces in parallel. Each returns schema-validated structured signals labeled <strong>high-risk</strong>, <strong>watch</strong>, or <strong>noise</strong>. If all six come back empty, the run short-circuits right here — before verify, synthesize, or gate ever run — and produces no brief at all.</p>
+        <dl class="persona-list">
+          <dt>Tobias</dt><dd>slipped commitments</dd>
+          <dt>Dorian</dt><dd>Salesforce opportunity changes, via read-only SOQL</dd>
+          <dt>Defoe</dt><dd>recurring flagged items</dd>
+          <dt>Pemberton</dt><dd>external account events</dd>
+          <dt>Marlow</dt><dd>quiet customer email threads</dd>
+          <dt>Sloan</dt><dd>retractions of last week's calls</dd>
+        </dl>
+        <h3>Phase 2 — Verify</h3>
+        <p>Each high-risk candidate goes to a skeptical reviewer whose job is to <strong>refute it</strong>. The default is "refuted" when a claim cannot be substantiated — an unsupported high-risk line is worse than a missing one.</p>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Worked example, part 2</p>
+        <h2>weekly-risk-sweep: Synthesize and Gate</h2>
+        <h3>Phase 3 — Synthesize</h3>
+        <p>Matija writes a one-screen brief. Refuted lines get demoted to a noise log with the refutation reason. Any line that exceeded the verification cap is marked "(unverified)" rather than presented as confirmed.</p>
+        <h3>Phase 4 — Gate</h3>
+        <p>An anti-pattern check fails the brief if it contains alarmist language, missing citations, or missing required sections.</p>
+        <div class="callout">
+          <span class="label">Takeaway</span>
+          <p>This is what "structural, verified fan-out" actually looks like: parallelism, plus a built-in skeptic, plus a rule against padding.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="2" data-section-label="How It Works">
+      <div class="content">
+        <p class="eyebrow">Putting it together</p>
+        <h2>Which Primitive Do I Reach For?</h2>
+        <ol class="decision-tree">
+          <li>Need a guaranteed-fire, explicitly named action? <span class="arrow">→</span> Slash command</li>
+          <li>Repeatable multi-step procedure that should auto-discover from phrasing? <span class="arrow">→</span> Skill</li>
+          <li>Self-contained, specialized, or independently parallel task? <span class="arrow">→</span> Subagent</li>
+          <li>Verification matters, and results must be synthesized from more than one independent surface? <span class="arrow">→</span> Workflow</li>
+          <li>None of the above? <span class="arrow">→</span> Just ask, in the main thread</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 3 — USE CASES ============ -->
+
+    <section class="slide dark" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-cards"></use></svg></div>
+        <p class="eyebrow">Section 3 · A day in the life of an SE</p>
+        <h2>Six Moments, Six Tools</h2>
+        <p>Not every task needs the heaviest hammer. Here is how a normal week of SE moments maps to the right primitive.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">Monday, before standup</p>
+        <h2>"What's Slipping This Week?"</h2>
+        <div class="card">
+          <span class="tag">Tool: weekly-risk-sweep workflow</span>
+          <p>You want a read on what is at risk across your accounts before the week starts.</p>
+          <p><strong>Why a workflow:</strong> six surfaces, verified, synthesized into one brief — exactly the five-or-more-agent, verification-matters case a workflow is built for.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">Two hours out</p>
+        <h2>A Customer Call Is on the Calendar</h2>
+        <div class="card">
+          <span class="tag">Tool: pre-call-prep skill</span>
+          <p>You have not looked at the account yet and the call is in two hours.</p>
+          <p><strong>Why a skill:</strong> a repeatable one-page prep procedure, auto-discovered from "prep for [account] meeting" — no command to remember.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">Mid-conversation with a prospect</p>
+        <h2>A Pointed Data Cloud Architecture Question</h2>
+        <div class="card">
+          <span class="tag">Tool: dispatch the Richard subagent</span>
+          <p>You want a specialist's point of view before you answer.</p>
+          <p><strong>Why a subagent:</strong> self-contained and specialized — a scoped persona, no need to share context back and forth with the main thread.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">Next week's business review</p>
+        <h2>Building a Customer Deck</h2>
+        <div class="card">
+          <span class="tag">Tool: deck-build skill</span>
+          <p>You need a client-specific deck, with Anna producing visuals and Maggie gating the final copy.</p>
+          <p><strong>Why a skill plus a gate:</strong> a repeatable multi-step procedure — template copy, visuals, population, review — that benefits from a standing quality check before it goes to a customer.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">You just picked up a new account</p>
+        <h2>Research That Needs to Compound Over Months</h2>
+        <div class="card">
+          <span class="tag">Tool: /account-research</span>
+          <p>You want a place to keep research, brainstorms, and pipeline notes that persists across sessions.</p>
+          <p><strong>Why persistent memory:</strong> the one case built for memory that compounds — dated Markdown notes under <code>accounts/&lt;slug&gt;/</code>, not a one-shot brief.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">Right after the call ends</p>
+        <h2>Drafting the Recap Before You Forget It</h2>
+        <div class="card">
+          <span class="tag">Tool: post-call-followup skill</span>
+          <p>You want a recap drafted and posted before the details fade.</p>
+          <p><strong>Why a skill:</strong> draft, then voice-gate, then post, then verify — one guided procedure, with a human still reviewing before anything ships.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide dark" data-section="3" data-section-label="Use Cases">
+      <div class="content">
+        <p class="eyebrow">The other half of good judgment</p>
+        <h2>When Not to Reach for the Team</h2>
+        <ul>
+          <li>A trivial one-liner — "what's today's date," "convert this to title case." Just answer it.</li>
+          <li>Anything needing live human judgment mid-task — a negotiation call, a read on a client's tone in the room.</li>
+          <li>Anything that would post, send, or commit without review. Every output in this plugin is a draft; nothing auto-sends.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 4 — GETTING STARTED ============ -->
+
+    <section class="slide dark" data-section="4" data-section-label="Getting Started">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-gate"></use></svg></div>
+        <p class="eyebrow">Section 4 · Getting started</p>
+        <h2>Install It</h2>
+        <pre class="code-block"><code>/plugin marketplace add derickafrica-public/subagent-team
+/plugin install subagent-team-harness@subagent-team-harness</code></pre>
+        <p>Two commands, run once per environment.</p>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="4" data-section-label="Getting Started">
+      <div class="content">
+        <p class="eyebrow">Setup is a start, not a finish</p>
+        <h2>Run Setup, Then Finish by Hand</h2>
+        <p>The scaffold step (<code>setup.sh</code>) creates the folder structure and default config, but it does not finish the job on its own. Plan on manual follow-ups:</p>
+        <ul>
+          <li>Add generated-output folders to <code>.gitignore</code>.</li>
+          <li>Authenticate any MCP connections you wire in — Salesforce, Slack, Google Workspace.</li>
+          <li>Decide whether you want any scheduled jobs turned on. None are required to start.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="4" data-section-label="Getting Started">
+      <div class="content">
+        <p class="eyebrow">Make it yours</p>
+        <h2>Adapt It — Do Not Adopt It As-Is</h2>
+        <p>This was built for one person's team and accounts. Before you rely on it:</p>
+        <ul>
+          <li>Rename or delete personas you do not need — 43 is a lot; most teams need a fraction.</li>
+          <li>Strip the Salesforce-specific content if you are not an SE.</li>
+          <li>Wire in your own accounts and Salesforce org instead of the examples in this deck.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="4" data-section-label="Getting Started">
+      <div class="content">
+        <p class="eyebrow">Maintenance, not magic</p>
+        <h2>Keeping Skills Fresh so Personas Don't Go Stale</h2>
+        <p><strong>weekly-skills-refresh</strong> scans for new Salesforce, Agentforce, and Data Cloud capabilities released in roughly the past seven days, and appends dated deltas to the affected persona files, plus a combined run log.</p>
+        <p><strong>self-improvement-skills-sweep</strong>, paired with <code>/apply-proposals</code>, runs weekly: it reads a mistake journal and the skill catalog, then stages retire, merge, tighten, or promote proposals for a human to walk through one at a time.</p>
+        <div class="callout">
+          <span class="label">Honest framing</span>
+          <p>Nothing auto-mutates. A human reviews and applies every proposed change, and freshness still depends on the underlying sources — web, Salesforce org, Slack — staying wired up. Staleness is managed by cadence and review, not eliminated.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide dark" data-section="4" data-section-label="Getting Started">
+      <div class="content">
+        <p class="eyebrow">The line that matters most</p>
+        <h2>Safety Posture</h2>
+        <ul>
+          <li><strong>Every output is a draft.</strong> A human reviews and sends everything the team produces.</li>
+          <li><strong>Salesforce org access is read-only</strong> everywhere it is wired in.</li>
+          <li><strong>Nothing auto-posts, auto-sends, or auto-commits</strong> without a review step in front of it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 5 — REFERENCE / APPENDIX ============ -->
+
+    <section class="slide dark" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-network"></use></svg></div>
+        <p class="eyebrow">Section 5 · Reference</p>
+        <h2>The Full Roster and Toolkit</h2>
+        <p>A compact reference for what shipped: the 43 personas by pod, the 20 skills, the 2 workflows, and the 2 slash commands.</p>
+        <p class="footnote">Reminder: every name below is a fictional persona invented for this workflow, not a real person or org chart.</p>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">Personas by pod, 1 of 4</p>
+        <h2>Technical &amp; Platform Pods</h2>
+        <dl class="persona-list">
+          <dt>Salesforce Platform Core</dt><dd>Bob (Distinguished Technical Architect), Kaz (Core Distinguished SE), Aldous (MuleSoft SE)</dd>
+          <dt>Salesforce Portfolio SE</dt><dd>Hollis (Sales Cloud), Marisol (Service Cloud), Tomasz (Revenue Cloud/CPQ), Gretta (Financial Services Cloud), Pradeep (Industries — Mfg/Auto/Energy), Jules (Slack SE)</dd>
+          <dt>Agentic Experience Layer</dt><dd>Mick (AXL Specialist)</dd>
+          <dt>Analytics &amp; Visualization</dt><dd>Vic (Tableau &amp; Analytics Architect)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">Personas by pod, 2 of 4</p>
+        <h2>Data &amp; AI Pods</h2>
+        <dl class="persona-list">
+          <dt>Data &amp; AI Architecture</dt><dd>Richard (Data &amp; AI Technical Architect), Bessie (Chief Data Expert)</dd>
+          <dt>Warehouse-Native Data Cloud</dt><dd>John (AWS), Paul (Snowflake), George (Databricks), Ringo (GCP) — each paired with Data Cloud</dd>
+          <dt>Composable CDP &amp; Activation</dt><dd>Hugo (Hightouch/Composable CDP), Linnea (Marketing Cloud SE)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">Personas by pod, 3 of 4</p>
+        <h2>GTM, Pricing, Productivity, Local Dev</h2>
+        <dl class="persona-list">
+          <dt>GTM &amp; Value</dt><dd>Abigail (Business Value Consultant), Anna (Creative Designer &amp; Content Producer)</dd>
+          <dt>Pricing</dt><dd>Ciandro (Flex Credits Pricing Expert)</dd>
+          <dt>Personal Productivity</dt><dd>Defoe (Chief of Staff), Eleanor (Calendar), Marlow (Inbox &amp; Communications), Tobias (Tasks &amp; Follow-Through), Sylvie (Notes &amp; Knowledge), Dorian (Opportunity Change Tracker, read-only)</dd>
+          <dt>Local Dev Environment</dt><dd>Sea Dong (Mac Tooling), Harlan (Claude Code Infrastructure)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="slide soft" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">Personas by pod, 4 of 4</p>
+        <h2>Quality, Accounts, Delivery, Operations</h2>
+        <dl class="persona-list">
+          <dt>Anthropic Practice</dt><dd>Boris (Applied AI Architect — best-practices gate)</dd>
+          <dt>Education &amp; Enablement</dt><dd>Maggie (Head of Education — pedagogy/voice gate), Wren (SE Craft Coach)</dd>
+          <dt>Workflow Discipline</dt><dd>Floyd (Intake Gate)</dd>
+          <dt>Account Intelligence / Strategy / Risk</dt><dd>Pemberton (Account Researcher), Sloan (Deal Strategist), Matija (Pipeline Risk Synthesizer)</dd>
+          <dt>Project Delivery / Build &amp; Deploy</dt><dd>Calder (Project Lead), Hank (Build Pod Lead), Vera (Build Pod Verification)</dd>
+          <dt>Operations</dt><dd>Roman (Senior Researcher), Gilbert (HR Manager), Imelda (Salesforce Admin — read-and-recommend)</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">The 20 skills</p>
+        <h2>One Line Each</h2>
+        <div class="skills-columns">
+          <ol>
+            <li><strong>account-intelligence</strong> — four-section architect POV brief for an account</li>
+            <li><strong>account-overview</strong> — live status pull across a parent account and subsidiaries</li>
+            <li><strong>account-research</strong> — persistent per-account research workspace with memory</li>
+            <li><strong>account-summary</strong> — HTML deck plus MD companion for an account, gated</li>
+            <li><strong>competitive-response</strong> — counter-positioning brief against a named competitor</li>
+            <li><strong>deck-build</strong> — client-specific deck from the approved template</li>
+            <li><strong>demo-build-runbook</strong> — T-minus countdown runbook for a demo</li>
+            <li><strong>meeting-notes</strong> — faithful extraction of decisions, actions, questions</li>
+            <li><strong>post-call-followup</strong> — draft a recap, post to Slack, verify it landed</li>
+            <li><strong>pre-call-prep</strong> — one-page prep brief for an upcoming meeting</li>
+          </ol>
+          <ol start="11">
+            <li><strong>project-plan-build</strong> — multi-phase milestone plan with dependencies</li>
+            <li><strong>project-tracker</strong> — daily project tracker with prepended deltas</li>
+            <li><strong>self-improvement-skills-sweep</strong> — weekly proposal loop over the skills themselves</li>
+            <li><strong>stakeholder-readout</strong> — one-page exec readout in three passes</li>
+            <li><strong>technical-strategy</strong> — technical-strategy doc grounded in a domain sweep</li>
+            <li><strong>update-all-tools</strong> — mass-update local dev tooling</li>
+            <li><strong>weekly-news-digest</strong> — weekly public-news digest for an account</li>
+            <li><strong>weekly-risk-sweep</strong> — the verified parallel risk sweep</li>
+            <li><strong>weekly-skills-refresh</strong> — scan for new Salesforce/Agentforce/Data Cloud capabilities</li>
+            <li><strong>workstream-status</strong> — weekly one-screen project status</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide light" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">The rest of the toolkit</p>
+        <h2>Workflows and Slash Commands</h2>
+        <h3>Workflows</h3>
+        <ul>
+          <li><strong>weekly-risk-sweep</strong> — verified parallel fan-out across six surfaces, gated brief</li>
+          <li><strong>account-summary-refresh</strong> — five-surface research feeding a gated account-summary rebuild</li>
+        </ul>
+        <h3>Slash commands</h3>
+        <ul>
+          <li><strong>/account-summary-update [account]</strong> — guaranteed-fire path to the account-summary run</li>
+          <li><strong>/apply-proposals</strong> — walk the self-improvement proposals one at a time</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="slide dark" data-section="5" data-section-label="Reference">
+      <div class="content">
+        <p class="eyebrow">Closing</p>
+        <h2>You Own It Now</h2>
+        <p>This deck describes a snapshot of one person's working setup. Nobody maintains it centrally — if you adopt it, you become the maintainer of your copy.</p>
+        <p>That is not a warning meant to scare you off. It is the honest tradeoff for a tool made of readable files instead of a black box: you can open any persona, skill, or workflow and change it. Rename what does not fit. Delete what you do not need. Extend what earns its place.</p>
+        <div class="roi-line">It drafts. You decide.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="chrome">
+    <div class="nav-controls">
+      <button type="button" id="prevBtn" aria-label="Previous slide">&larr; Prev</button>
+      <span class="counter" id="counter" aria-hidden="true">1 / 1</span>
+      <button type="button" id="nextBtn" aria-label="Next slide">Next &rarr;</button>
+      <button type="button" id="overviewBtn" class="ghost" aria-label="Toggle slide overview" aria-expanded="false">Overview</button>
+    </div>
+    <span class="kbd-hint">
+      <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> navigate ·
+      <kbd>space</kbd> next ·
+      <kbd>o</kbd> overview ·
+      <kbd>esc</kbd> close
+    </span>
+  </footer>
+</div>
+
+<div id="overview" role="dialog" aria-modal="true" aria-labelledby="overviewTitle">
+  <h2 id="overviewTitle">All Slides</h2>
+  <p class="ov-hint">Select a slide to jump to it, or press Escape / “o” to close.</p>
+  <div class="ov-grid" id="ovGrid"></div>
+</div>
+
+<div class="visually-hidden" id="liveRegion" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll("#slides .slide"));
+  var total = slides.length;
+  var current = 0;
+
+  var counterEl = document.getElementById("counter");
+  var sectionLabelEl = document.getElementById("sectionLabel");
+  var sectionNumEl = document.getElementById("sectionNum");
+  var progressFill = document.getElementById("progressFill");
+  var liveRegion = document.getElementById("liveRegion");
+  var prevBtn = document.getElementById("prevBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var overviewBtn = document.getElementById("overviewBtn");
+  var overviewPanel = document.getElementById("overview");
+  var ovGrid = document.getElementById("ovGrid");
+  var slidesMain = document.getElementById("slides");
+
+  function headingText(slide) {
+    var h = slide.querySelector("h1, h2");
+    return h ? h.textContent.trim() : "";
+  }
+
+  function sectionLabel(slide) {
+    return slide.getAttribute("data-section-label") || "";
+  }
+
+  function sectionNum(slide) {
+    return slide.getAttribute("data-section") || "0";
+  }
+
+  function render() {
+    slides.forEach(function (s, idx) {
+      if (idx === current) {
+        s.classList.add("active");
+      } else {
+        s.classList.remove("active");
+      }
+    });
+    var slide = slides[current];
+    counterEl.textContent = (current + 1) + " / " + total;
+    sectionLabelEl.textContent = sectionLabel(slide);
+    sectionNumEl.textContent = sectionNum(slide);
+    progressFill.style.width = (((current + 1) / total) * 100) + "%";
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+    liveRegion.textContent = "Slide " + (current + 1) + " of " + total + ". Section: " + sectionLabel(slide) + ". " + headingText(slide);
+    slidesMain.scrollTop = 0;
+  }
+
+  function goTo(idx) {
+    if (idx < 0) idx = 0;
+    if (idx > total - 1) idx = total - 1;
+    current = idx;
+    render();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function buildOverview() {
+    if (ovGrid.children.length) return;
+    slides.forEach(function (s, idx) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "ov-card";
+      card.setAttribute("data-idx", String(idx));
+      card.innerHTML =
+        '<div class="ov-num">' + (idx + 1) + " / " + total + '</div>' +
+        '<div class="ov-sec">' + sectionLabel(s) + '</div>' +
+        '<div class="ov-title">' + headingText(s) + '</div>';
+      card.addEventListener("click", function () {
+        goTo(idx);
+        closeOverview();
+      });
+      ovGrid.appendChild(card);
+    });
+  }
+
+  function markCurrentCard() {
+    var cards = ovGrid.querySelectorAll(".ov-card");
+    cards.forEach(function (c, idx) {
+      if (idx === current) {
+        c.classList.add("current");
+      } else {
+        c.classList.remove("current");
+      }
+    });
+  }
+
+  function openOverview() {
+    buildOverview();
+    markCurrentCard();
+    overviewPanel.classList.add("open");
+    overviewBtn.setAttribute("aria-expanded", "true");
+    var currentCard = ovGrid.querySelector(".ov-card.current");
+    if (currentCard) currentCard.focus();
+  }
+
+  function closeOverview() {
+    overviewPanel.classList.remove("open");
+    overviewBtn.setAttribute("aria-expanded", "false");
+    overviewBtn.focus();
+  }
+
+  function toggleOverview() {
+    if (overviewPanel.classList.contains("open")) {
+      closeOverview();
+    } else {
+      openOverview();
+    }
+  }
+
+  prevBtn.addEventListener("click", prev);
+  nextBtn.addEventListener("click", next);
+  overviewBtn.addEventListener("click", toggleOverview);
+
+  window.addEventListener("keydown", function (e) {
+    var overviewOpen = overviewPanel.classList.contains("open");
+    var targetIsButton = e.target && e.target.tagName === "BUTTON";
+
+    if (e.key === "Escape") {
+      if (overviewOpen) {
+        e.preventDefault();
+        closeOverview();
+      }
+      return;
+    }
+
+    if (e.key === "o" || e.key === "O") {
+      e.preventDefault();
+      toggleOverview();
+      return;
+    }
+
+    if (overviewOpen) {
+      if (e.key === "Tab") {
+        var focusables = Array.prototype.slice.call(
+          overviewPanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        );
+        if (focusables.length === 0) return;
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        var active = document.activeElement;
+        if (e.shiftKey) {
+          if (active === first || !overviewPanel.contains(active)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (active === last || !overviewPanel.contains(active)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+        return;
+      }
+      // Let Enter/click work naturally on cards; Escape/"o" are handled above.
+      return;
+    }
+
+    if (targetIsButton && (e.key === " " || e.key === "Enter")) {
+      // Let the focused button's own click handler run without double-firing nav.
+      return;
+    }
+
+    if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+      e.preventDefault();
+      next();
+    } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+      e.preventDefault();
+      prev();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      goTo(total - 1);
+    }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
