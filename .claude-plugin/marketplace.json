@@ -1,16 +1,15 @@
 {
   "name": "rolando-team",
   "owner": {
-    "name": "unmaintained — no owner (see README.md)"
+    "name": "unmaintained \u2014 no owner (see README.md)"
   },
-  "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows — portable across machines. Fictional persona naming convention, not a real team or org chart. No maintainer, no support channel — see README.md before installing.",
+  "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows \u2014 portable across machines. Fictional persona naming convention, not a real team or org chart. No maintainer, no support channel \u2014 see README.md before installing.",
   "plugins": [
     {
       "name": "rolando-team",
       "source": "./",
-      "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows — portable across machines.",
+      "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows \u2014 portable across machines.",
       "version": "1.0.0",
-      "license": "MIT",
       "category": "salesforce",
       "tags": [
         "orchestrator",
