@@ -574,58 +574,87 @@
 
 <svg aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
   <defs>
+    <!-- shared gradients/shadow for the hero glyphs — stops track the same --ic-* custom
+         properties the flat classes use, so gradients still adapt on dark vs light slides -->
+    <linearGradient id="heroGradNavyBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" style="stop-color:var(--ic-navy)"></stop>
+      <stop offset="100%" style="stop-color:var(--ic-blue)"></stop>
+    </linearGradient>
+    <linearGradient id="heroGradBlueLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color:var(--ic-blue)"></stop>
+      <stop offset="100%" style="stop-color:var(--ic-navy)"></stop>
+    </linearGradient>
+    <radialGradient id="heroGradHub" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" style="stop-color:var(--ic-blue)"></stop>
+      <stop offset="100%" style="stop-color:var(--ic-navy)"></stop>
+    </radialGradient>
+    <filter id="heroShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.28"></feDropShadow>
+    </filter>
+
     <symbol id="ic-network" viewBox="0 0 240 160">
-      <g class="ic-blue-s" fill="none" stroke-width="2">
+      <g class="ic-blue-s" fill="none" stroke-width="2.5" stroke-linecap="round">
         <line x1="120" y1="80" x2="40" y2="30"></line>
         <line x1="120" y1="80" x2="200" y2="30"></line>
         <line x1="120" y1="80" x2="40" y2="130"></line>
         <line x1="120" y1="80" x2="200" y2="130"></line>
         <line x1="120" y1="80" x2="120" y2="20"></line>
       </g>
-      <circle class="ic-navy" cx="120" cy="80" r="16"></circle>
-      <circle class="ic-blue" cx="40" cy="30" r="9"></circle>
-      <circle class="ic-blue" cx="200" cy="30" r="9"></circle>
-      <circle class="ic-blue" cx="40" cy="130" r="9"></circle>
-      <circle class="ic-blue" cx="200" cy="130" r="9"></circle>
-      <circle class="ic-blue" cx="120" cy="20" r="9"></circle>
+      <circle cx="120" cy="80" r="20" fill="url(#heroGradHub)" filter="url(#heroShadow)"></circle>
+      <circle cx="120" cy="80" r="20" fill="none" class="ic-navy-s" stroke-width="1" opacity="0.5"></circle>
+      <circle cx="112" cy="73" r="5" class="ic-gray" opacity="0.55"></circle>
+      <circle class="ic-blue" cx="40" cy="30" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="200" cy="30" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="40" cy="130" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="200" cy="130" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="120" cy="20" r="10" filter="url(#heroShadow)"></circle>
     </symbol>
 
     <symbol id="ic-contrast" viewBox="0 0 240 160">
       <line class="ic-gray-s" x1="95" y1="80" x2="195" y2="80" stroke-width="2" stroke-dasharray="4 5"></line>
-      <circle class="ic-navy" cx="55" cy="80" r="34"></circle>
-      <circle class="ic-blue" cx="170" cy="35" r="9"></circle>
-      <circle class="ic-blue" cx="200" cy="80" r="9"></circle>
-      <circle class="ic-blue" cx="170" cy="125" r="9"></circle>
-      <circle class="ic-blue" cx="140" cy="80" r="9"></circle>
+      <circle cx="55" cy="80" r="36" fill="url(#heroGradHub)" filter="url(#heroShadow)"></circle>
+      <circle cx="55" cy="80" r="36" fill="none" class="ic-navy-s" stroke-width="1" opacity="0.5"></circle>
+      <circle cx="55" cy="80" r="22" fill="none" class="ic-blue-s" stroke-width="1.5" opacity="0.4"></circle>
+      <circle class="ic-blue" cx="170" cy="35" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="200" cy="80" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="170" cy="125" r="10" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="140" cy="80" r="10" filter="url(#heroShadow)"></circle>
     </symbol>
 
     <symbol id="ic-flow" viewBox="0 0 240 160">
-      <path class="ic-navy-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,40 H150"></path>
-      <path class="ic-blue-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,80 H190"></path>
-      <path class="ic-navy-s" fill="none" stroke-width="6" stroke-linecap="round" d="M10,120 H120"></path>
+      <circle class="ic-navy" cx="8" cy="40" r="5"></circle>
+      <path fill="none" stroke="url(#heroGradNavyBlue)" stroke-width="6" stroke-linecap="round" d="M10,40 H150" filter="url(#heroShadow)"></path>
+      <circle class="ic-blue" cx="8" cy="80" r="5"></circle>
+      <path fill="none" stroke="url(#heroGradNavyBlue)" stroke-width="6" stroke-linecap="round" d="M10,80 H190" filter="url(#heroShadow)"></path>
+      <circle class="ic-navy" cx="8" cy="120" r="5"></circle>
+      <path fill="none" stroke="url(#heroGradNavyBlue)" stroke-width="6" stroke-linecap="round" d="M10,120 H120" filter="url(#heroShadow)"></path>
       <path class="ic-navy" d="M150,29 L173,40 L150,51 Z"></path>
       <path class="ic-blue" d="M190,69 L213,80 L190,91 Z"></path>
       <path class="ic-navy" d="M120,109 L143,120 L120,131 Z"></path>
     </symbol>
 
     <symbol id="ic-cards" viewBox="0 0 240 160">
-      <rect class="ic-gray" x="40" y="55" width="130" height="80" rx="10"></rect>
-      <rect class="ic-blue" x="60" y="37" width="130" height="80" rx="10"></rect>
-      <rect class="ic-navy" x="80" y="19" width="130" height="80" rx="10"></rect>
+      <rect class="ic-gray" x="40" y="55" width="130" height="80" rx="12" filter="url(#heroShadow)"></rect>
+      <rect x="60" y="37" width="130" height="80" rx="12" fill="url(#heroGradBlueLight)" filter="url(#heroShadow)"></rect>
+      <rect x="80" y="19" width="130" height="80" rx="12" fill="url(#heroGradNavyBlue)" filter="url(#heroShadow)"></rect>
+      <line x1="96" y1="38" x2="176" y2="38" class="ic-gray-s" stroke-width="3" stroke-linecap="round" opacity="0.6"></line>
+      <line x1="96" y1="52" x2="150" y2="52" class="ic-gray-s" stroke-width="3" stroke-linecap="round" opacity="0.45"></line>
     </symbol>
 
     <symbol id="ic-gate" viewBox="0 0 240 160">
-      <path class="ic-navy-s" fill="none" stroke-width="6" d="M120,14 L196,45 V96 C196,131 160,151 120,151 C80,151 44,131 44,96 V45 Z"></path>
-      <path class="ic-blue-s" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M84,86 L112,113 L161,60"></path>
+      <path d="M120,14 L196,45 V96 C196,131 160,151 120,151 C80,151 44,131 44,96 V45 Z" fill="url(#heroGradHub)" filter="url(#heroShadow)"></path>
+      <path class="ic-navy-s" fill="none" stroke-width="2" opacity="0.5" d="M120,14 L196,45 V96 C196,131 160,151 120,151 C80,151 44,131 44,96 V45 Z"></path>
+      <path class="ic-blue-s" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M84,86 L112,113 L161,60" filter="url(#heroShadow)"></path>
     </symbol>
 
     <symbol id="ic-cycle" viewBox="0 0 240 160">
-      <path class="ic-navy-s" fill="none" stroke-width="8" stroke-linecap="round" d="M60,40 A55,55 0 1 1 55,140"></path>
-      <path class="ic-navy" d="M50,118 L55,145 L28,138 Z"></path>
-      <circle class="ic-blue" cx="60" cy="40" r="8"></circle>
-      <circle class="ic-blue" cx="122" cy="17" r="8"></circle>
-      <circle class="ic-blue" cx="172" cy="53" r="8"></circle>
-      <circle class="ic-blue" cx="182" cy="112" r="8"></circle>
+      <path fill="none" stroke="url(#heroGradNavyBlue)" stroke-width="9" stroke-linecap="round" d="M60,40 A55,55 0 1 1 55,140" filter="url(#heroShadow)"></path>
+      <path class="ic-navy" d="M48,116 L55,145 L26,136 Z"></path>
+      <circle cx="120" cy="80" r="4" class="ic-gray" opacity="0.6"></circle>
+      <circle class="ic-blue" cx="60" cy="40" r="9" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="122" cy="17" r="9" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="172" cy="53" r="9" filter="url(#heroShadow)"></circle>
+      <circle class="ic-blue" cx="182" cy="112" r="9" filter="url(#heroShadow)"></circle>
     </symbol>
   </defs>
 </svg>
@@ -799,9 +828,9 @@
         <p class="eyebrow">The hub-and-spoke model</p>
         <h2>How a Request Gets Routed</h2>
         <div class="diagram-wrap">
-          <svg class="diagram" viewBox="0 0 900 380" role="img" aria-labelledby="routeTitle routeDesc">
+          <svg class="diagram" viewBox="0 0 900 400" role="img" aria-labelledby="routeTitle routeDesc">
             <title id="routeTitle">Diagram: how a request is routed through the team</title>
-            <desc id="routeDesc">A user request arrives at the orchestrator, Rolando, who never performs the work directly. Rolando matches the request against a routing table and hands it to one or more of four pods: Salesforce Platform Core, Data and AI Architecture, Personal Productivity, and Risk. Each pod contains named subagents — Bob, Richard, Tobias, and Matija are shown here as examples. Those subagents do the work and return results. The results flow back up through the orchestrator, who synthesizes them into a single answer for the user.</desc>
+            <desc id="routeDesc">A user request arrives at the orchestrator, Rolando, who never performs the work directly. Rolando matches the request against a routing table and hands it to one or more of four pods: Salesforce Platform Core, Data and AI Architecture, Personal Productivity, and Risk. Each pod contains named subagents — Bob, Richard, Tobias, and Matija are shown here as examples. Those subagents do the work; two of them, Bob and Matija, are shown returning results along routed paths that run around the outside of the pod columns back to the orchestrator, who synthesizes everything into a single answer for the user.</desc>
             <defs>
               <marker id="arrowRouteFwd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" class="ic-navy" />
@@ -809,50 +838,73 @@
               <marker id="arrowRouteBack" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" class="ic-blue" />
               </marker>
+              <linearGradient id="gradNavyRoute" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#032D60" />
+                <stop offset="100%" stop-color="#021f43" />
+              </linearGradient>
+              <linearGradient id="gradBlueRoute" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0176D3" />
+                <stop offset="100%" stop-color="#015a9e" />
+              </linearGradient>
+              <linearGradient id="gradGrayRoute" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F3F5F6" />
+                <stop offset="100%" stop-color="#C9CED2" />
+              </linearGradient>
+              <filter id="shadowRoute" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#032D60" flood-opacity="0.28" />
+              </filter>
             </defs>
 
-            <rect x="370" y="10" width="160" height="40" rx="6" class="ic-navy" />
-            <text x="450" y="35" text-anchor="middle" font-size="14" fill="#fff">User request</text>
-            <line x1="450" y1="50" x2="450" y2="78" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <rect x="370" y="8" width="160" height="42" rx="8" fill="url(#gradNavyRoute)" filter="url(#shadowRoute)" />
+            <text x="450" y="34" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">User request</text>
+            <line x1="450" y1="50" x2="450" y2="72" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
 
-            <rect x="310" y="80" width="280" height="52" rx="6" class="ic-blue" />
-            <text x="450" y="102" text-anchor="middle" font-size="14" fill="#fff" font-weight="600">Orchestrator (Rolando)</text>
-            <text x="450" y="120" text-anchor="middle" font-size="11" fill="#fff">routes, never does the work itself</text>
+            <rect x="300" y="74" width="300" height="58" rx="10" fill="url(#gradBlueRoute)" filter="url(#shadowRoute)" />
+            <text x="450" y="99" text-anchor="middle" font-size="14" fill="#fff" font-weight="700">Orchestrator (Rolando)</text>
+            <text x="450" y="118" text-anchor="middle" font-size="11" fill="#fff">routes, never does the work itself</text>
 
-            <line x1="450" y1="132" x2="120" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="450" y1="132" x2="340" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="450" y1="132" x2="560" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="450" y1="132" x2="780" y2="168" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <!-- forward bus: orchestrator stems down to a horizontal trunk, then fans out to each pod -->
+            <line x1="442" y1="132" x2="442" y2="150" stroke-width="2" class="ic-navy-s" />
+            <line x1="120" y1="150" x2="780" y2="150" stroke-width="2.5" class="ic-navy-s" />
+            <line x1="120" y1="150" x2="120" y2="172" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="340" y1="150" x2="340" y2="172" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="560" y1="150" x2="560" y2="172" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="780" y1="150" x2="780" y2="172" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
 
-            <rect x="20" y="170" width="200" height="44" rx="6" class="ic-gray" />
-            <text x="120" y="196" text-anchor="middle" font-size="12" fill="#032D60">Salesforce Platform Core</text>
-            <rect x="240" y="170" width="200" height="44" rx="6" class="ic-gray" />
-            <text x="340" y="196" text-anchor="middle" font-size="12" fill="#032D60">Data &amp; AI Architecture</text>
-            <rect x="460" y="170" width="200" height="44" rx="6" class="ic-gray" />
-            <text x="560" y="196" text-anchor="middle" font-size="12" fill="#032D60">Personal Productivity</text>
-            <rect x="680" y="170" width="200" height="44" rx="6" class="ic-gray" />
-            <text x="780" y="196" text-anchor="middle" font-size="12" fill="#032D60">Risk</text>
+            <rect x="20" y="172" width="200" height="46" rx="8" fill="url(#gradGrayRoute)" filter="url(#shadowRoute)" />
+            <text x="120" y="199" text-anchor="middle" font-size="12" font-weight="700" fill="#032D60">Salesforce Platform Core</text>
+            <rect x="240" y="172" width="200" height="46" rx="8" fill="url(#gradGrayRoute)" filter="url(#shadowRoute)" />
+            <text x="340" y="199" text-anchor="middle" font-size="12" font-weight="700" fill="#032D60">Data &amp; AI Architecture</text>
+            <rect x="460" y="172" width="200" height="46" rx="8" fill="url(#gradGrayRoute)" filter="url(#shadowRoute)" />
+            <text x="560" y="199" text-anchor="middle" font-size="12" font-weight="700" fill="#032D60">Personal Productivity</text>
+            <rect x="680" y="172" width="200" height="46" rx="8" fill="url(#gradGrayRoute)" filter="url(#shadowRoute)" />
+            <text x="780" y="199" text-anchor="middle" font-size="12" font-weight="700" fill="#032D60">Risk</text>
 
-            <line x1="120" y1="214" x2="120" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="340" y1="214" x2="340" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="560" y1="214" x2="560" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
-            <line x1="780" y1="214" x2="780" y2="258" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="120" y1="218" x2="120" y2="250" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="340" y1="218" x2="340" y2="250" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="560" y1="218" x2="560" y2="250" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
+            <line x1="780" y1="218" x2="780" y2="250" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowRouteFwd)" />
 
-            <rect x="40" y="260" width="160" height="40" rx="6" class="ic-navy" />
-            <text x="120" y="285" text-anchor="middle" font-size="13" fill="#fff">Bob</text>
-            <rect x="260" y="260" width="160" height="40" rx="6" class="ic-navy" />
-            <text x="340" y="285" text-anchor="middle" font-size="13" fill="#fff">Richard</text>
-            <rect x="480" y="260" width="160" height="40" rx="6" class="ic-navy" />
-            <text x="560" y="285" text-anchor="middle" font-size="13" fill="#fff">Tobias</text>
-            <rect x="700" y="260" width="160" height="40" rx="6" class="ic-navy" />
-            <text x="780" y="285" text-anchor="middle" font-size="13" fill="#fff">Matija</text>
+            <rect x="40" y="250" width="160" height="56" rx="8" fill="url(#gradNavyRoute)" filter="url(#shadowRoute)" />
+            <text x="120" y="272" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Bob</text>
+            <text x="120" y="289" text-anchor="middle" font-size="9" fill="#EAF3FB">Distinguished Architect</text>
+            <rect x="260" y="250" width="160" height="56" rx="8" fill="url(#gradNavyRoute)" filter="url(#shadowRoute)" />
+            <text x="340" y="272" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Richard</text>
+            <text x="340" y="289" text-anchor="middle" font-size="9" fill="#EAF3FB">Data &amp; AI Architect</text>
+            <rect x="480" y="250" width="160" height="56" rx="8" fill="url(#gradNavyRoute)" filter="url(#shadowRoute)" />
+            <text x="560" y="272" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Tobias</text>
+            <text x="560" y="289" text-anchor="middle" font-size="9" fill="#EAF3FB">Tasks &amp; Follow-Through</text>
+            <rect x="700" y="250" width="160" height="56" rx="8" fill="url(#gradNavyRoute)" filter="url(#shadowRoute)" />
+            <text x="780" y="272" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">Matija</text>
+            <text x="780" y="289" text-anchor="middle" font-size="9" fill="#EAF3FB">Pipeline Risk Synthesizer</text>
 
-            <line x1="120" y1="258" x2="430" y2="134" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
-            <line x1="780" y1="258" x2="470" y2="134" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
-            <line x1="450" y1="132" x2="450" y2="328" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+            <!-- return paths: routed through the outer margins so they never cross a pod or subagent box -->
+            <path d="M40,278 L8,278 L8,103 L300,103" fill="none" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+            <path d="M860,278 L892,278 L892,103 L600,103" fill="none" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
+            <line x1="458" y1="132" x2="458" y2="352" stroke-width="2" stroke-dasharray="6 5" class="ic-blue-s" marker-end="url(#arrowRouteBack)" />
 
-            <rect x="370" y="330" width="160" height="40" rx="6" class="ic-blue" />
-            <text x="450" y="355" text-anchor="middle" font-size="13" fill="#fff" font-weight="600">Synthesized answer</text>
+            <rect x="370" y="354" width="160" height="40" rx="8" fill="url(#gradBlueRoute)" filter="url(#shadowRoute)" />
+            <text x="450" y="378" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">Synthesized answer</text>
           </svg>
         </div>
         <p class="diagram-caption">One request in — routed to the owner, never handled by the orchestrator itself — a synthesized answer out.</p>
@@ -920,56 +972,89 @@
         <p class="eyebrow">A rule that has no exception</p>
         <h2>How One Subagent's Output Feeds Another</h2>
         <div class="diagram-wrap">
-          <svg class="diagram" viewBox="0 0 900 400" role="img" aria-labelledby="handoffTitle handoffDesc">
+          <svg class="diagram" viewBox="0 0 900 410" role="img" aria-labelledby="handoffTitle handoffDesc">
             <title id="handoffTitle">Diagram: how one subagent's output becomes another subagent's input</title>
-            <desc id="handoffDesc">Six fan-out subagents from the weekly-risk-sweep workflow — Tobias, Dorian, Defoe, Pemberton, Marlow, and Sloan — each read an independent surface and return schema-validated signals. The workflow script bundles those six outputs. Two verify subagents each receive a bundled high-risk candidate and try to refute it. The workflow script bundles the verified survivors again. Matija, a synthesis subagent, receives that second bundle and writes the final brief. At every stage the workflow script sits between one subagent and the next — no subagent ever reads another subagent's output directly, and none share a context window.</desc>
+            <desc id="handoffDesc">Six fan-out subagents from the weekly-risk-sweep workflow — Tobias reading slipped commitments, Dorian reading opportunity changes, Defoe reading flagged items, Pemberton reading account events, Marlow reading email threads, and Sloan reading retracted calls — each read an independent surface and return schema-validated signals. The workflow script bundles those six outputs. Two verify subagents each receive a bundled high-risk candidate and try to refute it. The workflow script bundles the verified survivors again. Matija, a synthesis subagent, receives that second bundle and writes the final brief. At every stage the workflow script sits between one subagent and the next — no subagent ever reads another subagent's output directly, and none share a context window.</desc>
             <defs>
               <marker id="arrowStage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" class="ic-navy" />
               </marker>
+              <linearGradient id="gradNavyHandoff" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#032D60" />
+                <stop offset="100%" stop-color="#021f43" />
+              </linearGradient>
+              <linearGradient id="gradBlueHandoff" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0176D3" />
+                <stop offset="100%" stop-color="#015a9e" />
+              </linearGradient>
+              <linearGradient id="gradGrayHandoff" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F3F5F6" />
+                <stop offset="100%" stop-color="#C9CED2" />
+              </linearGradient>
+              <filter id="shadowHandoff" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#032D60" flood-opacity="0.28" />
+              </filter>
             </defs>
 
-            <rect x="35" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="95" y="45" text-anchor="middle" font-size="12" fill="#fff">Tobias</text>
-            <rect x="170" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="230" y="45" text-anchor="middle" font-size="12" fill="#fff">Dorian</text>
-            <rect x="305" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="365" y="45" text-anchor="middle" font-size="12" fill="#fff">Defoe</text>
-            <rect x="440" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="500" y="45" text-anchor="middle" font-size="11" fill="#fff">Pemberton</text>
-            <rect x="575" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="635" y="45" text-anchor="middle" font-size="12" fill="#fff">Marlow</text>
-            <rect x="710" y="20" width="120" height="40" rx="6" class="ic-navy" /><text x="770" y="45" text-anchor="middle" font-size="12" fill="#fff">Sloan</text>
+            <rect x="35" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="95" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Tobias</text>
+            <text x="95" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">slipped commitments</text>
 
-            <line x1="95" y1="60" x2="95" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="230" y1="60" x2="230" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="365" y1="60" x2="365" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="500" y1="60" x2="500" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="635" y1="60" x2="635" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="770" y1="60" x2="770" y2="88" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <rect x="170" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="230" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Dorian</text>
+            <text x="230" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">opportunity changes</text>
 
-            <rect x="35" y="90" width="795" height="30" rx="4" class="ic-blue" />
-            <text x="432" y="110" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">workflow script bundles the six fan-out signals</text>
+            <rect x="305" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="365" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Defoe</text>
+            <text x="365" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">flagged items</text>
 
-            <line x1="230" y1="120" x2="300" y2="148" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="635" y1="120" x2="560" y2="148" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <rect x="440" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="500" y="41" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Pemberton</text>
+            <text x="500" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">account events</text>
 
-            <rect x="140" y="150" width="300" height="40" rx="6" class="ic-navy" />
-            <text x="290" y="175" text-anchor="middle" font-size="12" fill="#fff">Verify subagent — refute candidate A</text>
-            <rect x="460" y="150" width="300" height="40" rx="6" class="ic-navy" />
-            <text x="610" y="175" text-anchor="middle" font-size="12" fill="#fff">Verify subagent — refute candidate B</text>
+            <rect x="575" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="635" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Marlow</text>
+            <text x="635" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">email threads</text>
 
-            <line x1="290" y1="190" x2="380" y2="218" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
-            <line x1="610" y1="190" x2="520" y2="218" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <rect x="710" y="20" width="120" height="52" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="770" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Sloan</text>
+            <text x="770" y="57" text-anchor="middle" font-size="8.5" fill="#EAF3FB">retracted calls</text>
 
-            <rect x="200" y="220" width="500" height="30" rx="4" class="ic-blue" />
-            <text x="450" y="240" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">workflow script bundles the verified survivors</text>
+            <line x1="95" y1="72" x2="95" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="230" y1="72" x2="230" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="365" y1="72" x2="365" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="500" y1="72" x2="500" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="635" y1="72" x2="635" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <line x1="770" y1="72" x2="770" y2="94" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
 
-            <line x1="450" y1="250" x2="450" y2="278" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <rect x="35" y="96" width="795" height="30" rx="6" fill="url(#gradBlueHandoff)" filter="url(#shadowHandoff)" />
+            <text x="432" y="116" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">workflow script bundles the six fan-out signals</text>
 
-            <rect x="330" y="280" width="240" height="44" rx="6" class="ic-navy" />
-            <text x="450" y="298" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">Matija — synthesis subagent</text>
-            <text x="450" y="315" text-anchor="middle" font-size="10" fill="#fff">writes the brief, gates it</text>
+            <!-- orthogonal hand-off: bar to verify, routed with a right-angle jog so it never clips a box -->
+            <path d="M230,126 L230,141 L300,141 L300,156" fill="none" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <path d="M635,126 L635,141 L560,141 L560,156" fill="none" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
 
-            <line x1="450" y1="324" x2="450" y2="352" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <rect x="140" y="156" width="300" height="44" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="290" y="182" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">Verify subagent — refute candidate A</text>
+            <rect x="460" y="156" width="300" height="44" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="610" y="182" text-anchor="middle" font-size="12" fill="#fff" font-weight="600">Verify subagent — refute candidate B</text>
 
-            <rect x="330" y="354" width="240" height="40" rx="6" class="ic-gray" />
-            <text x="450" y="379" text-anchor="middle" font-size="12" fill="#032D60">Weekly risk brief</text>
+            <path d="M290,200 L290,213 L380,213 L380,226" fill="none" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+            <path d="M610,200 L610,213 L520,213 L520,226" fill="none" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="200" y="226" width="500" height="30" rx="6" fill="url(#gradBlueHandoff)" filter="url(#shadowHandoff)" />
+            <text x="450" y="246" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">workflow script bundles the verified survivors</text>
+
+            <line x1="450" y1="256" x2="450" y2="280" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="330" y="282" width="240" height="48" rx="8" fill="url(#gradNavyHandoff)" filter="url(#shadowHandoff)" />
+            <text x="450" y="304" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">Matija — synthesis subagent</text>
+            <text x="450" y="321" text-anchor="middle" font-size="10" fill="#EAF3FB">writes the brief, gates it</text>
+
+            <line x1="450" y1="330" x2="450" y2="354" stroke-width="2" class="ic-navy-s" marker-end="url(#arrowStage)" />
+
+            <rect x="330" y="356" width="240" height="42" rx="8" fill="url(#gradGrayHandoff)" filter="url(#shadowHandoff)" />
+            <text x="450" y="381" text-anchor="middle" font-size="12" fill="#032D60" font-weight="700">Weekly risk brief</text>
           </svg>
         </div>
         <p class="diagram-caption">Subagents do not share memory. The orchestrator or workflow script captures one subagent's output and carries it into the next subagent's input — there is no direct link between subagents.</p>
@@ -1187,7 +1272,7 @@
 
     <section class="slide dark" data-section="5" data-section-label="Reference">
       <div class="content">
-        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-network"></use></svg></div>
+        <div class="hero-wrap"><svg class="hero" viewBox="0 0 240 160" aria-hidden="true"><use href="#ic-cycle"></use></svg></div>
         <p class="eyebrow">Section 5 · Reference</p>
         <h2>The Full Roster and Toolkit</h2>
         <p>A compact reference for what shipped: the 43 personas by pod, the 20 skills, the 2 workflows, and the 2 slash commands.</p>
