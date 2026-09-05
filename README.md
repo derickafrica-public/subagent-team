@@ -1,4 +1,4 @@
-# rolando-team
+# subagent-team-harness
 
 Portable package for the "Rolando" AI team: an orchestrator persona plus a
 roster of specialist personas/skills/workflows, extracted from a working
@@ -147,7 +147,7 @@ Left out by design — this is the account/business-agnostic "team infrastructur
 
 ## Install
 
-1. As a Claude Code plugin: point Claude Code at this directory (or a marketplace repo containing it) via `/plugin marketplace add` + `/plugin install rolando-team`. This gets you the agents, skills, and commands auto-discovered.
+1. As a Claude Code plugin: point Claude Code at this directory (or a marketplace repo containing it) via `/plugin marketplace add` + `/plugin install subagent-team-harness`. This gets you the agents, skills, and commands auto-discovered.
 2. Run the scaffold once against your target project so the `CLAUDE.md`-driven routing logic has the files it expects at the paths it expects:
    ```
    ./setup.sh /path/to/target-project

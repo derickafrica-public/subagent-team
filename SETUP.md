@@ -1,4 +1,4 @@
-# Setting up rolando-team on a new machine
+# Setting up subagent-team-harness on a new machine
 
 ## Why two steps (plugin install *and* setup.sh)
 
@@ -18,23 +18,23 @@ hand, but not the Rolando orchestrator experience.
 
 ### 1. Get the plugin onto the new machine
 Simplest path: this plugin directory lives inside the `claude-projects` git
-repo. Clone the repo (or just copy the `plugin/rolando-team/` directory) to
+repo. Clone the repo (or just copy the `plugin/subagent-team-harness/` directory) to
 the new machine.
 
 ### 2. Install as a Claude Code plugin (optional but recommended)
 ```
-/plugin marketplace add /path/to/plugin/rolando-team
-/plugin install rolando-team
+/plugin marketplace add /path/to/plugin/subagent-team-harness
+/plugin install subagent-team-harness
 ```
 This registers the 43 agents, 20 skills, and 2 commands with the harness.
 
 ### 3. Scaffold a target project
 ```
-cd /path/to/plugin/rolando-team
+cd /path/to/plugin/subagent-team-harness
 ./setup.sh /path/to/new-or-existing-project
 ```
 This copies:
-- `CLAUDE.md` (won't overwrite an existing one — writes `CLAUDE.md.rolando-team` instead so you can diff/merge)
+- `CLAUDE.md` (won't overwrite an existing one — writes `CLAUDE.md.subagent-team-harness` instead so you can diff/merge)
 - `team/ROSTER.md`
 - `team/*.md` (43 personas, de-frontmattered back to plain persona docs)
 - `team/scripts/self-improvement/*`

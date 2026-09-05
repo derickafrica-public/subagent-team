@@ -25,8 +25,8 @@ mkdir -p "$TARGET/.claude/agents"
 
 # CLAUDE.md — do not overwrite an existing one blindly.
 if [ -f "$TARGET/CLAUDE.md" ]; then
-  echo "  ! $TARGET/CLAUDE.md already exists — writing template to CLAUDE.md.rolando-team instead. Diff and merge by hand."
-  cp "$PLUGIN_DIR/templates/CLAUDE.md" "$TARGET/CLAUDE.md.rolando-team"
+  echo "  ! $TARGET/CLAUDE.md already exists — writing template to CLAUDE.md.subagent-team-harness instead. Diff and merge by hand."
+  cp "$PLUGIN_DIR/templates/CLAUDE.md" "$TARGET/CLAUDE.md.subagent-team-harness"
 else
   cp "$PLUGIN_DIR/templates/CLAUDE.md" "$TARGET/CLAUDE.md"
   echo "  + CLAUDE.md"

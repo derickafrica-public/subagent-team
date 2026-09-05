@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """One-time conversion: team/<name>.md persona files -> plugin agents/<name>.md.
 
-Run from repo root: python3 plugin/rolando-team/scripts/build_agents.py
+Run from repo root: python3 plugin/subagent-team-harness/scripts/build_agents.py
 Not needed after the plugin is built — kept for regenerating agents if
 team/*.md personas change upstream.
 """
@@ -11,7 +11,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 TEAM_DIR = REPO_ROOT / "team"
-OUT_DIR = REPO_ROOT / "plugin" / "rolando-team" / "agents"
+OUT_DIR = REPO_ROOT / "plugin" / "subagent-team-harness" / "agents"
 
 # Non-persona files that live alongside personas in team/ but aren't team members.
 SKIP = {"ROSTER.md", "runbook.md"}

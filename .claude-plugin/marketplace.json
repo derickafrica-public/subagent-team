@@ -1,12 +1,12 @@
 {
-  "name": "rolando-team",
+  "name": "subagent-team-harness",
   "owner": {
     "name": "unmaintained \u2014 no owner (see README.md)"
   },
   "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows \u2014 portable across machines. Fictional persona naming convention, not a real team or org chart. No maintainer, no support channel \u2014 see README.md before installing.",
   "plugins": [
     {
-      "name": "rolando-team",
+      "name": "subagent-team-harness",
       "source": "./",
       "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows \u2014 portable across machines.",
       "version": "1.0.0",
