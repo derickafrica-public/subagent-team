@@ -1,5 +1,8 @@
 {
   "name": "rolando-team",
+  "owner": {
+    "name": "unmaintained — no owner (see README.md)"
+  },
   "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows — portable across machines. Fictional persona naming convention, not a real team or org chart. No maintainer, no support channel — see README.md before installing.",
   "plugins": [
     {
