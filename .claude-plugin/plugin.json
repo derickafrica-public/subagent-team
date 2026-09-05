@@ -1,0 +1,6 @@
+{
+  "name": "rolando-team",
+  "version": "1.0.0",
+  "description": "Rolando's AI team: orchestrator persona, 43 specialist agents, account-research/account-summary skills, and the account-summary + weekly-risk-sweep workflows — portable across machines. All persona names (Rolando, Boris, Maggie, Floyd, etc.) are a fictional naming convention invented for one person's personal workflow, not real people, titles, or a Salesforce-endorsed org chart. No maintainer, no support channel — see README.md before installing.",
+  "keywords": ["orchestrator", "multi-agent", "salesforce", "account-research", "personal-productivity", "unmaintained"]
+}

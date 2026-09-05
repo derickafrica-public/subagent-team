@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.rolando.account-summary-weekly
+  Cadence: Monday 07:00 America/Chicago, weekly.
+
+  Refreshes ./acme-corp-account-summary.{html,md} in Update Mode and syncs the
+  findings back into accounts/acme-corp/ memory. Ad-hoc updates are always
+  available on demand in a Claude Code session ("Update account summary for
+  Acme Corp") — this job is only the scheduled Monday-morning path.
+
+  Mac is currently on America/Chicago (CDT/CST), so launchd local-time
+  Hour=7 / Minute=0 fires at 07:00 CT directly. No TZ conversion applied.
+
+  DST risk: launchd's StartCalendarInterval fires in *local* time. If the Mac
+  TZ ever drifts off Central, the offset drifts on US DST transitions. The
+  wrapper script (account-summary-weekly.sh) defends against this with a
+  TZ=America/Chicago Monday/07:00 guard that exits early on a mismatch.
+  Mirrors com.rolando.defoe-morning-brief and com.rolando.pemberton-weekly-news.
+
+  Weekday: 1 = Monday (1=Mon ... 5=Fri, 0 and 7 both = Sun).
+
+  RunAtLoad is intentionally false — this is a scheduled cadence, not a startup
+  job. Loading the plist (or rebooting the Mac) must NOT trigger a summary run.
+
+  To activate:
+    launchctl load  ~/Library/LaunchAgents/com.rolando.account-summary-weekly.plist
+  To deactivate:
+    launchctl unload ~/Library/LaunchAgents/com.rolando.account-summary-weekly.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.rolando.account-summary-weekly</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string><PROJECT_DIR>/team/scripts/account-summary-weekly.sh</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key><integer>1</integer>
+    <key>Hour</key><integer>7</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>StandardOutPath</key>
+  <string>/Users/youruser/.claude/logs/account-summary-weekly.launchd.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/youruser/.claude/logs/account-summary-weekly.launchd.stderr.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/Users/youruser/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+</dict>
+</plist>
