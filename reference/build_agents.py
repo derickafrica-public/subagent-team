@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """One-time conversion: team/<name>.md persona files -> plugin agents/<name>.md.
 
-Run from repo root: python3 plugin/subagent-team-harness/scripts/build_agents.py
-Not needed after the plugin is built — kept for regenerating agents if
-team/*.md personas change upstream.
+HISTORICAL / DESIGN REFERENCE ONLY — not functional in this standalone package.
+This was the build tool used inside the original monorepo (where it lived at
+`plugin/<name>/scripts/build_agents.py`, three directories under the repo root,
+next to a `team/*.md` source-of-truth directory) to regenerate `agents/*.md`
+from upstream persona files whenever they changed. Neither `team/*.md` nor that
+directory depth exists in this portable package, so REPO_ROOT below resolves to
+the wrong place and this script will not run correctly as shipped. Kept here,
+same as `reference/playbooks/`, so the original build process isn't lost — if
+you want to regenerate agents from your own persona source, treat this as a
+starting point to adapt, not a script to run as-is.
 """
 import re
 import sys
